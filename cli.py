@@ -4,7 +4,17 @@ from models import Student, Course, Enrollment, session
 class CLI:
     def run(self):
         while True:
-            choice = input("Choose an option:\n1. Add Student\n2. Add Course\n3. Enroll Student\n4. List Students\n5. List Courses\n6. List Enrollments\n7. Exit\n")
+            choice = input(                
+                "Choose an option:\n"
+                "1. Add Student\n"
+                "2. Add Course\n"
+                "3. Enroll Student\n"
+                "4. List Students\n"
+                "5. List Courses\n"
+                "6. List Enrollments\n"
+                "7. Remove Student\n"
+                "8. Exit\n"
+            )
             if choice == '1':
                 self.add_student()
             elif choice == '2':
@@ -18,7 +28,9 @@ class CLI:
             elif choice == '6':
                 self.list_enrollments()
             elif choice == '7':
-                break
+                self.remove_student()
+            elif choice == '8':
+                break           
             else:
                 print("Invalid choice. Please try again.")
 
@@ -59,6 +71,16 @@ class CLI:
         enrollments = session.query(Enrollment).all()
         table = [[enrollment.student_id, enrollment.course_id, enrollment.grade] for enrollment in enrollments]
         print(tabulate(table, headers=["Student ID", "Course ID", "Grade"]))
+
+    def remove_student(self):
+        student_id = int(input("Enter student id to remove: "))
+        student = session.query(Student).get(student_id)
+        if student:
+            session.delete(student)
+            session.commit()
+            print("Student removed successfully.")
+        else:
+            print("No student found with the given ID.")    
 
 if __name__ == "__main__":
     CLI().run()
